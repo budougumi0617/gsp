@@ -1,5 +1,6 @@
 # gsp
 [![CircleCI](https://circleci.com/gh/budougumi0617/gsp/tree/master.svg?style=svg)](https://circleci.com/gh/budougumi0617/gsp/tree/master)
+[![codecov](https://codecov.io/gh/budougumi0617/gsp/branch/master/graph/badge.svg)](https://codecov.io/gh/budougumi0617/gsp)
 
 Learning System Programing by Go.
 
