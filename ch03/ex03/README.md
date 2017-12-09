@@ -6,4 +6,12 @@ OSのデバイスにリンクされた`io.Writer`や`io.Reader`は、1つのフ�
 ```go
 zipWriter := zip.NewWriter()
 defer zipWriter.Close()
-``
+```
+
+この構造体そのものは`io.Writer`ではありませんが、`Create()`メソッドを呼ぶと、個別のファイルを書き込むための`io.Writer`が返ってきます。
+
+```go
+writer, err := zipWriter.Create("newfile.txt")
+```
+
+上記の例では、`newfile.txt`という実際のファイルが、最初に作った出力先ファイル`file`へと圧縮されます。では、実際のファイルではなく、文字列`strings.Reader`を使ってzipファイルを作成するにはどうすればいいでしょうか。考えてみてください。
