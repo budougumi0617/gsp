@@ -7,11 +7,12 @@ import (
 	"os"
 )
 
+var source = [][]string{
+	{"hello", "world"},
+	{"hello", "golang"},
+}
+
 func main() {
-	source := [][]string{
-		{"hello", "world"},
-		{"hello", "golang"},
-	}
 	WriteCsv(os.Stdout, source)
 }
 
