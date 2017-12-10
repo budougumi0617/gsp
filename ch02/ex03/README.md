@@ -40,7 +40,7 @@ $ go run multiwriter.go
 ```
 
 ```bash
-$ curl -D - -X -H --compressed "localhost:8080/"
+$ curl --compressed -D - -X GET "localhost:8080/"
 HTTP/1.1 200 OK
 Content-Encoding: gzip
 Content-Type: application/json
