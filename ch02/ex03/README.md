@@ -27,3 +27,28 @@ func main() {
   http.listenAndServe(":8080", nil)
 }
 ```
+
+
+# Result
+
+```bash
+$ go run multiwriter.go
+{
+    "Hello": "World",
+    "example": "encoding"
+}
+```
+
+```bash
+$ curl -D - -X -H --compressed "localhost:8080/"
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Type: application/json
+Date: Sun, 10 Dec 2017 01:25:12 GMT
+Content-Length: 62
+
+{
+    "Hello": "World",
+    "example": "encoding"
+}
+```
