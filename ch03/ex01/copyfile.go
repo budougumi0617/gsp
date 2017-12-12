@@ -1,15 +1,29 @@
 package main
 
-import "io"
-import "os"
+import (
+	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+)
 
 func main() {
-	src, err := os.Open("old.txt")
+	dastname := "tempfile.txt"
+	copy(dastname, "old.txt")
+	result, err := ioutil.ReadFile(dastname)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%v\n", string(result))
+}
+
+func copy(dstName, srcName string) {
+	src, err := os.Open(srcName)
 	if err != nil {
 		panic(err)
 	}
 	defer src.Close()
-	dst, err := os.Create("tempfile.txt")
+	dst, err := os.Create(dstName)
 	if err != nil {
 		panic(err)
 	}
