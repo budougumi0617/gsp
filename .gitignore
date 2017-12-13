@@ -15,4 +15,5 @@
 
 
 *.swp
-tempfile.txt
+tempfile.*
+temp.*
