@@ -7,6 +7,19 @@ zipファイルの出力先は単なる`io.Writer`です。そのため、2.4.4�
 ```go
 func handler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/zip")
-    w.Header().Set("Content-Disposition", "attachment: filename=ascii_sample.zip"
+    w.Header().Set("Content-Disposition", "attachment: filename=ascii_sample.zip")
 }
+```
+
+
+# Result
+
+```bash
+$ unzip ~/Desktop/ascii_sample.zip
+Archive:  /Users/shimizu-yoichiro/Desktop/ascii_sample.zip
+  inflating: test
+$ ls
+README.md    test         zipserver.go
+$ cat test
+content of file in zip%
 ```
