@@ -15,3 +15,15 @@ writer, err := zipWriter.Create("newfile.txt")
 ```
 
 上記の例では、`newfile.txt`という実際のファイルが、最初に作った出力先ファイル`file`へと圧縮されます。では、実際のファイルではなく、文字列`strings.Reader`を使ってzipファイルを作成するにはどうすればいいでしょうか。考えてみてください。
+
+
+# Result
+
+```bash
+$ gor zipstrings.go
+$ unzip temp.zip
+Archive:  temp.zip
+  inflating: test
+$ cat test
+content of file in zip%
+```

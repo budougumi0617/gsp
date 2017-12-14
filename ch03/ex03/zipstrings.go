@@ -16,7 +16,7 @@ func main() {
 	defer zipfile.Close()
 
 	zw := zip.NewWriter(zipfile)
-	zw.Close()
+	defer zw.Close()
 
 	f, err := zw.Create("test")
 	if err != nil {
