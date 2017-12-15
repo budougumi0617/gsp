@@ -18,14 +18,14 @@ import (
 var (
     computer   = strings.NewReader("COMPUTER")
     system     = strings.NewReader("SYSTEM")
-    programing = strings.NewReader("PROGRAMNG")
+    programing = strings.NewReader("PROGRAMING")
 )
 
 func main() {
     var stream io.Reader
 
     // ここにioパッケージを使ったコードを書く
-    io.Copy(os.StdOut, stream)
+    io.Copy(os.Stdout, stream)
 }
 ```
 
@@ -37,3 +37,9 @@ func main() {
 
 ヒントとして、図3.7のモデル図を使って、ストリームの組み合わせを考えてみるといいでしょう。
 
+# Result
+
+```bash
+$ gor print_ascii.go
+ASCII%
+```
