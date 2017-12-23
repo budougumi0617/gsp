@@ -15,7 +15,7 @@ func Notify(second int) string {
 	var s string
 	select {
 	case <-time.After(time.Duration(second) * time.Second):
-		s = "Passed " + strconv.Itoa(second) + " secounds"
+		s = "Passed " + strconv.Itoa(second) + " seconds"
 	}
 	return s
 }
