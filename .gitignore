@@ -17,3 +17,6 @@
 *.swp
 tempfile.*
 temp.*
+
+# Debug file by dlv
+debug
