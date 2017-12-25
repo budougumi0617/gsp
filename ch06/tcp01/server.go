@@ -40,6 +40,7 @@ func main() {
 				StatusCode: 200,
 				ProtoMajor: 1,
 				ProtoMinor: 0,
+				// P39に説明がある。ioutil.NopCloserはダミーのClose()を持ち、io.ReadCloserのふりをする。
 				Body: ioutil.NopCloser(
 					strings.NewReader("Hello World\n")),
 			}
