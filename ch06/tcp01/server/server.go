@@ -45,6 +45,9 @@ func main() {
 					strings.NewReader("Hello World\n")),
 			}
 			resp.Write(conn)
+			// defferはつけない。defferはスコープを外れないと動かないので、
+			// forループの中でdefferしたいなら、別の入れ子スコープを作らないと動かなくなる
+			// https://mattn.kaoriya.net/software/lang/go/20151212021608.htm
 			conn.Close()
 		}()
 	}

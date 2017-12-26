@@ -4,6 +4,8 @@ Go言語のソケットを使ってHTTP/1.0相当の送受信を実現してみ�
 
 # Result log
 
+Access from Chrome
+
 ```bash
 Accept 127.0.0.1:64012
 GET / HTTP/1.1
@@ -30,4 +32,28 @@ Cookie: _app_session=NUVYeGhCR...54414.1513840574.1514097775.13
 Pragma: no-cache
 Referer: http://localhost:8888/
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+```
+
+
+# 6.5.2 TCPソケットを使ったHTTPクライアント
+HTTPクライアントも作成する。
+
+# Result log
+
+```bash
+$ gor client/client.go
+HTTP/1.0 200 OK
+Connection: close
+
+Hello World
+
+-------------------------------------------------------
+$ gor server/server.go
+Server is running at localhost:8888
+Accept 127.0.0.1:53833
+GET / HTTP/1.1
+Host: localhost:8888
+User-Agent: Go-http-client/1.1
+
+
 ```
