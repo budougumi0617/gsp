@@ -61,6 +61,7 @@ func main() {
 		if current == len(sendMessages) {
 			break
 		}
-		conn.Close()
 	}
+	// 全て終わったらCloseする
+	conn.Close()
 }
