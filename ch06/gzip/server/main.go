@@ -23,8 +23,8 @@ func isGZipAcceptable(request *http.Request) bool {
 }
 
 // processSession 1セッションの処理をする
-func processSession(conn net.conn) {
-	fmt.Fprintf("Accept %v\n", conn.RemoteAddr())
+func processSession(conn net.Conn) {
+	fmt.Printf("Accept %v\n", conn.RemoteAddr())
 	defer conn.Close()
 	for {
 		conn.SetReadDeadline(time.Now().Add(5 * time.Second))
@@ -38,33 +38,33 @@ func processSession(conn net.conn) {
 			} else if err == io.EOF {
 				break
 			}
+			panic(err)
 		}
-		panic(err)
+		dump, err := httputil.DumpRequest(request, true)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(string(dump))
+		// レスポンスを書き込む
+		response := http.Response{
+			StatusCode: 200,
+			ProtoMajor: 1,
+			ProtoMinor: 1,
+			Header:     make(http.Header),
+		}
+		if isGZipAcceptable(request) {
+			content := "Hello World (gzipped)\n"
+			// コンテンツをgzip化して転送
+			var buffer bytes.Buffer
+			writer := gzip.NewWriter(&buffer)
+			io.WriteString(writer, content)
+			writer.Close()
+			response.Body = ioutil.NopCloser(
+				strings.NewReader(content))
+			response.ContentLength = int64(len(content))
+		}
+		response.Write(conn)
 	}
-	dump, err := httputil.DumpRequest(request, true)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(dump))
-	// レスポンスを書き込む
-	response := http.Request{
-		StatusCode: 200,
-		ProtoMajor: 1,
-		ProtoMinor: 1,
-		Header:     make(http.Header),
-	}
-	if isGZipAcceptable(request) {
-		content := "Hello World (gzipped)\n"
-		// コンテンツをgzip化して転送
-		var buffer bytes.Buffer
-		writer := gzip.NewWriter(&buffer)
-		io.WriteString(writer, content)
-		writer.Close()
-		response.Body = ioutil.NopCloser(
-			strings.NewReader(content))
-		response.ContentLength = int64(len(content))
-	}
-	response.Write(conn)
 }
 func main() {
 	listener, err := net.Listen("tcp", "localhost:8888")
