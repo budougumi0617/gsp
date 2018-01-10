@@ -8,65 +8,59 @@ import (
 	"net"
 	"net/http"
 	"net/http/httputil"
-	"strings"
+	"strconv"
 )
 
-// 青空文庫: ごんぎつねより
-// http://www.aozora.gr.jp/cards/000121/card628.html
-var contents = []string{
-	"これは、私わたしが小さいときに、村の茂平もへいというおじいさんからきいたお話です。",
-	"むかしは、私たちの村のちかくの、中山なかやまというところに小さなお城があって、",
-	"中山さまというおとのさまが、おられたそうです。",
-	"その中山から、少しはなれた山の中に、「ごん狐ぎつね」という狐がいました。",
-	"ごんは、一人ひとりぼっちの小狐で、しだの一ぱいしげった森の中に穴をほって住んでいました。",
-	"そして、夜でも昼でも、あたりの村へ出てきて、いたずらばかりしました。",
-}
-
-func processSession(conn net.Conn) {
-	fmt.Printf("Accept %v\n", conn.RemoteAddr())
-	defer conn.Close()
-	for {
-		// リクエストを読み込む
-		request, err := http.ReadRequest(bufio.NewReader(conn))
-		if err != nil {
-			if err != io.EOF {
-				break
-			}
-			log.Fatal(err)
-		}
-		dump, err := httputil.DumpRequest(request, true)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(string(dump))
-
-		// レスポンスを書き込む
-		// http.Responseはファイルサイズ指定がないとConnection: closeを送ってしまうため、直接HTTPレスポンスを書き込む。
-		fmt.Fprintf(conn, strings.Join([]string{
-			"HTTP/1.1 200 OK",
-			"Content-Type: type/plain",
-			"Transfer-Encoding: chunked",
-			"", "",
-		}, "\r\n"))
-		for _, content := range contents {
-			bytes := []byte(content)
-			fmt.Fprintf(conn, "%x\r\n%s\r\n", len(bytes), content)
-		}
-		fmt.Fprintf(conn, "0\r\n\r\n")
-	}
-}
-
 func main() {
-	listener, err := net.Listen("tcp", "localhost:8888")
+	conn, err := net.Dial("tcp", "localhost:8888")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Server is running at localhost:8888")
+	defer conn.Close()
+	request, err := http.NewRequest(
+		"GET",
+		"http:/localhost:8888",
+		nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = request.Write(conn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	reader := bufio.NewReader(conn)
+	response, err := http.ReadResponse(reader, request)
+	if err != nil {
+		log.Fatal(err)
+	}
+	dump, err := httputil.DumpResponse(response, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(dump))
+	if len(response.TransferEncoding) < 1 ||
+		response.TransferEncoding[0] != "chunked" {
+		log.Fatal("wrong transfer encoding")
+	}
 	for {
-		conn, err := listener.Accept()
+		// サイズを取得
+		sizeStr, err := reader.ReadBytes('\n')
+		if err == io.EOF {
+			break
+		}
+		// 16進数のサイズをパース。サイズがゼロならクローズ
+		size, err := strconv.ParseInt(
+			string(sizeStr[:len(sizeStr)-2]), 16, 64)
+		if size == 0 {
+			break
+		}
 		if err != nil {
 			log.Fatal(err)
 		}
-		go processSession(conn)
+		// サイズ数分バッファを確保して読み込み
+		line := make([]byte, int(size))
+		reader.Read(line)
+		reader.Discard(2)
+		fmt.Printf(" %d bytes: %s\n", size, string(line))
 	}
 }
