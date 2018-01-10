@@ -29,7 +29,7 @@ func processSession(conn net.Conn) {
 		// リクエストを読み込む
 		request, err := http.ReadRequest(bufio.NewReader(conn))
 		if err != nil {
-			if err != io.EOF {
+			if err == io.EOF {
 				break
 			}
 			log.Fatal(err)

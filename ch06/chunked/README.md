@@ -4,11 +4,18 @@
 # Result
 
 ```bash
+$ gor server/main.go
+Server is running at localhost:8888
+Accept 127.0.0.1:53345
+GET /localhost:8888 HTTP/1.1
+User-Agent: Go-http-client/1.1
+
+
 ```
 
 
 ```bash
-gor client/main.go
+$ gor client/main.go
 HTTP/1.1 200 OK
 Transfer-Encoding: chunked
 Content-Type: type/plain
