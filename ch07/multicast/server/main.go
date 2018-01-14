@@ -11,6 +11,7 @@ const interval = 10 * time.Second
 
 func main() {
 	fmt.Println("Start tick server at 224.0.0.1:9999")
+	// Do not wait connection from client
 	conn, err := net.Dial("udp", "224.0.0.1:9999")
 	if err != nil {
 		log.Fatal(err)
