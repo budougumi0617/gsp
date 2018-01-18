@@ -1,63 +1,37 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net"
-	"net/http"
-	"net/http/httputil"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
-// ch08/domainsocket/server/main.goをデータグラム型のUNIXドメインソケット版に改造したもの。
 func main() {
-	// UNIX度名ソケット用のソケットファイルを準備する。
 	path := filepath.Join(os.TempDir(), "unixdomainsocket-server")
-	// 存在しなかったらしなかったで問題ないのでエラーチェックは削除
+	// エラーチェックは削除（存在しなかったら存在しなかったで問題ないので不要）
 	os.Remove(path)
-	listener, err := net.Listen("unixgram", path)
+	fmt.Println("Server is runnning at " + path)
+	conn, err := net.ListenPacket("unixgram", path)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Ctrl + Cなどで止めてしまった場合など、サーバー側でnet.Listener.Close()を呼ばないと、ソケットファイルが残り続ける。
-	defer listener.Close()
-	fmt.Println("Server is running at " + path)
+	defer conn.Close()
+	buffer := make([]byte, 1500)
 	for {
-		conn, err := listener.Accept()
+		// 返信用のクライアントのリモートアドレスが取得できる。
+		// クライアント側がnet.Dialでコネクションを開いていると取得できない
+		length, remoteAddress, err := conn.ReadFrom(buffer)
 		if err != nil {
 			log.Fatal(err)
 		}
-		go func() {
-			fmt.Printf("Accept %v\n", conn.RemoteAddr())
-			// リクエストを読み込む
-			request, err := http.ReadRequest(
-				bufio.NewReader(conn))
-			if err != nil {
-				log.Fatal(err)
-			}
-			dump, err := httputil.DumpRequest(request, true)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println(string(dump))
-			// レスポンスを書き込む
-			resp := http.Response{
-				StatusCode: 200,
-				ProtoMajor: 1,
-				ProtoMinor: 0,
-				// P39に説明がある。ioutil.NopCloserはダミーのClose()を持ち、io.ReadCloserのふりをする。
-				Body: ioutil.NopCloser(
-					strings.NewReader("Hello World\n")),
-			}
-			resp.Write(conn)
-			// defferはつけない。defferはスコープを外れないと動かないので、
-			// forループの中でdefferしたいなら、別の入れ子スコープを作らないと動かなくなる
-			// https://mattn.kaoriya.net/software/lang/go/20151212021608.htm
-			conn.Close()
-		}()
+		fmt.Printf("Received from %v: %v\n",
+			remoteAddress, string(buffer[:length]))
+		_, err = conn.WriteTo([]byte("Hello from sever"),
+			remoteAddress)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
