@@ -7,12 +7,16 @@ import (
 	"net"
 	"net/http"
 	"net/http/httputil"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
-// TCPServer for benchmark
-func TCPServer() {
-	listener, err := net.Listen("tcp", "localhost:18888")
+// UnixDomainSocketStreamServer for benchmark
+func UnixDomainSocketStreamServer() {
+	path := filepath.Join(os.TempDir(), "bench-unixdomainsocket-stream")
+	os.Remove(path)
+	listener, err := net.Listen("unix", path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,6 +45,5 @@ func TCPServer() {
 			response.Write(conn)
 			conn.Close()
 		}()
-
 	}
 }
