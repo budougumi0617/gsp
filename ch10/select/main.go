@@ -1,4 +1,6 @@
 // +build darwin
+
+// コンパイル環境を指定するときは空行が必須
 package main
 
 import (
