@@ -26,6 +26,7 @@ func main() {
 	// cmdが終了するのを待機する。
 	case <-ctx.Done():
 		fmt.Println("done:", ctx.Err())
+		// default: を書くと待機せずに進む
 	}
 	state := cmd.ProcessState
 	fmt.Printf("%s\n", state.String())
