@@ -4,7 +4,7 @@ import "fmt"
 import "time"
 
 func sub1(c int) {
-	fmt.Printf("share by argments", c*c)
+	fmt.Println("share by argments", c*c)
 }
 
 func main() {
