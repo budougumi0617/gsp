@@ -22,3 +22,4 @@ temp.*
 # Debug file by dlv
 debug
 
+rootfs/
