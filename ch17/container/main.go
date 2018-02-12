@@ -7,6 +7,7 @@ import (
 	"runtime"
 
 	"github.com/opencontainers/runc/libcontainer"
+	"github.com/opencontainers/runc/libcontainer/configs"
 	_ "github.com/opencontainers/runc/libcontainer/nsenter"
 	"golang.org/x/sys/unix"
 )
@@ -25,8 +26,8 @@ func init() {
 func main() {
 
 	abs, _ := filepath.Abs("./")
-	factroy, err := libcontainer.New(abs, libcontainer.Cgroupfs,
-		libcontainer.IntArgs(os.Args[0], "init"))
+	factory, err := libcontainer.New(abs, libcontainer.Cgroupfs,
+		libcontainer.InitArgs(os.Args[0], "init"))
 	if err != nil {
 		log.Fatal(err)
 		return
