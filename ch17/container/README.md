@@ -15,9 +15,11 @@ $ tar -C rootfs -xvf alpine.tar
 
 ```bash
 $ docker build -t build-container . --no-cache=true
-$ docker run --privileged -it build-container /bin/bash
-root@160bbef5547b:/go/src/github.com/budougumi0617/gsp/ch17/container# ./main
+$ docker run --privileged -it build-container /bin/ash
+/go/src/github.com/budougumi0617/gsp/ch17/container # ./main
 /bin/sh: can't access tty; job control turned off
 / # /bin/hostname
 testing
+/ # exit
+/go/src/github.com/budougumi0617/gsp/ch17/container # exit
 ```
