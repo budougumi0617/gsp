@@ -14,9 +14,10 @@ $ tar -C rootfs -xvf alpine.tar
 ## Result
 
 ```bash
-$ docker build -t build-container .
-$ docker run -it build-container /bin/ash
-/go/src/github.com/budougumi0617/gsp/ch17/container # sudo ./main
-WARN[0000] signal: killed
-2018/02/14 00:43:37 container_linux.go:348: starting container process caused "process_linux.go:279: applying cgroup configuration for process caused \"mkdir /sys/fs/cgroup/cpuset/system: read-only file system\""
+$ docker build -t build-container . --no-cache=true
+$ docker run --privileged -it build-container /bin/bash
+root@160bbef5547b:/go/src/github.com/budougumi0617/gsp/ch17/container# ./main
+/bin/sh: can't access tty; job control turned off
+/ # /bin/hostname
+testing
 ```
